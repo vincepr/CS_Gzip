@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip
+namespace CS_Gzip.Gzip.Deflate
 {
     /// <summary>
     /// Bite history is a ring buffer that keeps track of previous huffman encodings used.
@@ -59,7 +59,7 @@ namespace CS_Gzip
             if (len < 0 || dist < 1 || dist > _length) throw new InvalidDataException("Invalid length or distance");
             uint readIdx = (_index - dist + (uint)_data.Length) % (uint)_data.Length;
             if (0 > readIdx || readIdx >= _data.Length) throw new InvalidDataException("Unreachable state in ByteHistory.copy()");
-            for (int i=0; i<len; i++)
+            for (int i = 0; i < len; i++)
             {
                 var by = _data[readIdx];
                 ReadOnlySpan<byte> b = new byte[] { _data[readIdx] };

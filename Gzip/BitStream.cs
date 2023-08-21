@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip
+namespace CS_Gzip.Gzip
 {
     /// <summary>
     /// Bit input stream, wraps around a normal stream but instead of bytes it can read single bits.
     ///
-    /// - can read either starting from left or right.
+    /// - can read either starting from left or right. (bool BigEndian)
     /// </summary>
     internal class BitStream
     {
@@ -23,7 +23,7 @@ namespace CS_Gzip
         private Stream _stream;
         private int _nextIdx;
         private byte _currentByte;
-           
+
         /// <summary>
         /// Reads one BIT (not byte) null when empty
         /// 
@@ -41,8 +41,8 @@ namespace CS_Gzip
                 _currentByte = (byte)r;
             }
             bool result;
-            if (!bigEndian) result = (_currentByte & (1 << _nextIdx)) > 0;
-            else result = (_currentByte & (1 << (7-_nextIdx))) > 0;
+            if (!bigEndian) result = (_currentByte & 1 << _nextIdx) > 0;
+            else result = (_currentByte & 1 << 7 - _nextIdx) > 0;
             _nextIdx++;
             return result;
         }
@@ -57,9 +57,9 @@ namespace CS_Gzip
                 throw new InvalidDataException("Number of bits out of range.");
 
             uint result = 0;
-            for (int i=0; i<numBits; i++)
+            for (int i = 0; i < numBits; i++)
             {
-                bool? bit = this.ReadBit();
+                bool? bit = ReadBit();
                 if (bit is null) throw new InvalidDataException("Number of bits out of range");
                 if ((bool)bit) result |= (uint)1 << i;
                 //else result |= (uint)0 << i;    // we can skipp since we init it as row of 0s i guess

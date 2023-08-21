@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip
+namespace CS_Gzip.Gzip
 {
     // von frankkamke am 2/6/2013 - https://dotnet-snippets.de/snippet/crc-checksummen-berechnung/1672
     public static class HashingCrc32
@@ -56,7 +56,7 @@ namespace CS_Gzip
         /// CRC32 Tabelle (Lookup-Tabelle)
         /// wird für die Berechnung der CRC32 Checksumme benötigt
         /// </summary>
-        private static readonly UInt32[] crctab =
+        private static readonly uint[] crctab =
    {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419,
     0x706af48f, 0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4,
@@ -120,16 +120,16 @@ namespace CS_Gzip
         /// <returns>4 byte CRC Checksumme</returns>
         public static byte[] CRC32(byte[] Data)
         {
-            UInt32 crc = 0xffffffff;
+            uint crc = 0xffffffff;
             for (int i = 0; i < Data.Length; i++)
-                crc = (crc >> 8) ^ crctab[(crc & 0xff) ^ Data[i]];
+                crc = crc >> 8 ^ crctab[crc & 0xff ^ Data[i]];
             crc ^= 0xffffffff;
             byte[] output = new byte[4];
 
             output[0] = (byte)(crc >> 24);
             output[1] = (byte)(crc >> 16);
             output[2] = (byte)(crc >> 8);
-            output[3] = (byte)(crc);
+            output[3] = (byte)crc;
 
             return output;
         }

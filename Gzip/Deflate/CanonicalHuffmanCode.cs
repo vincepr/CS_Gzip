@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip
+namespace CS_Gzip.Gzip.Deflate
 {
     /// <summary>
     /// builds a dictionary of the huffmantree.
@@ -31,7 +31,7 @@ namespace CS_Gzip
         public CanonicalHuffmanCode(in uint[] codeLengths)
         {
             // check if params are of valid state:
-            foreach( var l in codeLengths)
+            foreach (var l in codeLengths)
             {
 
                 if (l < 0) throw new ArgumentOutOfRangeException("Negative code length");
@@ -40,7 +40,7 @@ namespace CS_Gzip
 
             // build the map
             uint nextCode = 0;
-            for (int codeLen=1; codeLen <= MaxCodeLength; codeLen++)
+            for (int codeLen = 1; codeLen <= MaxCodeLength; codeLen++)
             {
                 nextCode = nextCode << 1;
                 uint startBit = (uint)1 << codeLen;
@@ -65,7 +65,7 @@ namespace CS_Gzip
         public uint DecodeNextSymbol(BitStream input)
         {
             uint codeBits = 1;
-            for (int i=0; i<MaxCodeLength; i++)
+            for (int i = 0; i < MaxCodeLength; i++)
             {
                 codeBits = codeBits << 1 | input.ReadUint(1);
                 bool hasResult = _bitToSymbol.TryGetValue(codeBits, out var result);

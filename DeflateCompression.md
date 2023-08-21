@@ -15,14 +15,8 @@ dotnet run ./compressed-input.gz outputfile.png
 >successfully decompressed outfile.png
 ```
 
-## useful links
-
-- https://www.rfc-editor.org/rfc/rfc1951.html
-
-- https://www.nayuki.io/page/simple-deflate-decompressor
-
 ## Benchmark
-- at least at first glance it seems my own implementation is faster by at least a factor x3.
+- at least at first glance it seems my own implementation is faster by at least a factor x3 (over the default dotnet implementation).
 - Probably because the dotnet implementation allocates more memory on the heap. (more allocations and thus more time spent on allocating and gc)
 
 ```
@@ -44,3 +38,10 @@ dotnet run ./compressed-input.gz outputfile.png
 |      Mp3Og | 81.05 us | 0.928 us | 0.868 us | 3.0518 |    9760 B |
 |   TxtBigOg | 81.74 us | 0.993 us | 0.929 us | 3.0518 |    9799 B |
 ```
+
+
+## useful links
+
+- https://www.rfc-editor.org/rfc/rfc1951.html
+
+- https://www.nayuki.io/page/simple-deflate-decompressor
