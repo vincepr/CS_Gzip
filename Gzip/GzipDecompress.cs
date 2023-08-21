@@ -49,7 +49,7 @@ internal class GzipDecompress
         using (var stream = File.OpenRead(inPath))
         {
             // StreamReader vs BinaryReader here?
-            using (var reader = new BinaryReader(stream))
+            using (var reader = new BinaryReader(stream, Encoding.Latin1))
             {
 
                 Stream output;
@@ -159,7 +159,6 @@ internal class GzipDecompress
             outStrBuilder.AppendLine($"Flag2 FEXTRA - Indicating Extra");
             reader.ReadBytes(bytesToSkipp);
         }
-        Console.WriteLine(outStrBuilder.ToString());
         if (fileFlags[8]) outStrBuilder.AppendLine($"Flag3 FNAME- Indicating File name: {readNullTerminatedString(reader)}");
         if (fileFlags[16]) outStrBuilder.AppendLine($"Flag4 FCOMMENT - Indicating Comment: {readNullTerminatedString(reader)}");
         if (fileFlags[2])
@@ -237,7 +236,18 @@ internal class GzipDecompress
         while (ch != '\0')
         {
             result += ch;
-            ch = reader.ReadChar();
+            try
+            {
+                ch = reader.ReadChar();
+
+            }
+            catch
+            {
+                // reader.ReadChar() might break on special characters
+                // for non Encoding.Latin1 it did break on öäüß so we leave this in to secure against it
+                ch = '?';
+                reader.ReadByte();
+            }
         }
         return result;
     }
