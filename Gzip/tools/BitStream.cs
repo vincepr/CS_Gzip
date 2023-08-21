@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip.Gzip
+namespace CS_Gzip.Gzip.tools
 {
     /// <summary>
     /// Bit input stream, wraps around a normal stream but instead of bytes it can read single bits.

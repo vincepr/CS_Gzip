@@ -16,6 +16,7 @@ using File = System.IO.File;
 using System.Buffers.Binary;
 using System.Security.Cryptography;
 using CS_Gzip.Gzip.Deflate;
+using CS_Gzip.Gzip.tools;
 
 namespace CS_Gzip.Gzip;
 

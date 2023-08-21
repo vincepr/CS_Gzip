@@ -16,6 +16,7 @@ dotnet run ./compressed-input.gz outputfile.png
 ```
 
 ## Benchmark
+### Initial values without any optimisations
 - with calculating the crc32: (over the whole file)
 
 ```

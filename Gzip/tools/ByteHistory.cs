@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip.Gzip.Deflate
+namespace CS_Gzip.Gzip.tools
 {
     /// <summary>
     /// Bite history is a ring buffer that keeps track of previous huffman encodings used.

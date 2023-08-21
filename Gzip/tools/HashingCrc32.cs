@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip.Gzip
+namespace CS_Gzip.Gzip.tools
 {
     // von frankkamke am 2/6/2013 - https://dotnet-snippets.de/snippet/crc-checksummen-berechnung/1672
     public static class HashingCrc32
