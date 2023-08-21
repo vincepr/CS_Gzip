@@ -14,7 +14,7 @@ using static System.Net.WebRequestMethods;
 using System.Xml.Linq;
 using File = System.IO.File;
 using System.Buffers.Binary;
-
+using System.Security.Cryptography;
 
 namespace CS_Gzip;
 
@@ -57,12 +57,17 @@ internal class GzipDecompress
                     Decompressor.Decompress(bitwiseInStream, output);
                     
                     // read checksums
-                    int crc = readLittleEndianInt32(reader);
+                    byte[] crc = BitConverter.GetBytes(readLittleEndianInt32(reader));
                     int size = readLittleEndianInt32(reader);
                     if (size != output.Length)
                         return $"Error: Size after decompression mismatched. expected: {size} got: {output.Length}";
                     // Not-implemented: checking if calculated-crc == read crc-checksum matches up
-                    // var crc32 = new Crc32(); is in some external-package -> we skipp that for now
+                    var realCrc32 = HashBytesFromStream(output);
+                    Array.Reverse(realCrc32, 0, realCrc32.Length);
+     
+                    // we must compare equality of each byte:
+                    if (!(realCrc32.AsSpan().SequenceEqual(crc)))
+                        return $"Error: Crc32 mismatch; got: {String.Join(" ", crc)} expected: {String.Join(" ", realCrc32)}";
                     
                     // we write out the decompressed bytes to a file
                     writeStreamToFile(output, outPath);
@@ -70,6 +75,7 @@ internal class GzipDecompress
                 }
                 catch (Exception e)
                 {
+                    throw new Exception(e.Message);
                     return $"Error: {e.Message}";
                 }
             };
@@ -155,6 +161,15 @@ internal class GzipDecompress
      *          HELPERS
      */
     
+    private static bool byteArraysEqual(byte[] a, byte[] b)
+    {
+        if (a.Length != b.Length) return false;
+        for (int i=0; i< a.Length; i++) {
+            if (a[i] != b[i]) return false;
+        }
+        return true;
+    }
+
     private static void writeStreamToFile(Stream output, string newFilePath)
     {
         using (var fileStream = File.Create(newFilePath))
@@ -165,6 +180,21 @@ internal class GzipDecompress
 
     }
     
+    private static byte[] HashBytesFromStream(Stream output)
+    {
+        byte[] arr;
+        if (output is MemoryStream) arr = ((MemoryStream) output).ToArray();
+        else
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                output.CopyTo(memoryStream);
+                arr = memoryStream.ToArray();
+            }
+        }
+        return HashingCrc32.CRC32(arr);
+    }
+
     // Debugging only till we get anything working
     private static void dbgPrintOutStream(Stream output)
     {

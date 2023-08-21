@@ -44,22 +44,22 @@ namespace CS_Gzip
             {
                 // Header Block
                 isFinal = input.ReadUint(1) != 0;       // BFINAL
-                uint type = input.ReadUint(2);          // BTYPE
+                uint bType = input.ReadUint(2);          // BTYPE
                 // decompress rest of the block depending on type
-                if (type == 0)
+                if (bType == 0)
                 {
                     decompressUncompressedBlock();
                 }
-                else if (type == 1)
+                else if (bType == 1)
                 {
                     decompressHuffmanBlock(FIXED_LENGTH_CODE, FIXED_DIST_CODE);
                 }
-                else if (type == 2)
+                else if (bType == 2)
                 {
                     var(huffLenCode, huffDistCode) = readHuffmanCodes();
                     decompressHuffmanBlock(huffLenCode, huffDistCode);
                 }
-                else if (type == 3)
+                else if (bType == 3)
                 {
                     throw new InvalidDataException("Reserved block type.");
                 }
