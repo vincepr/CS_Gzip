@@ -3,12 +3,9 @@ using BenchmarkDotNet.Running;
 using CS_Gzip;
 using CS_Gzip.Gzip;
 
-//TestingEquality.Run();
-//decompressTestFiles();
-runBenchmark();
-
-
-
+TestingEquality.Run();
+decompressTestFiles();
+//runBenchmark();
 
 // decompress the png test file
 static void decompressTestFiles()

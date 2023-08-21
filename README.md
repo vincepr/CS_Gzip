@@ -3,6 +3,7 @@
 Working decompressor for single-file gzip-compressed files or Datastreams. 
 - Along the DEFLATE Compressed Data Format Specification version 1.3
 - as described in **RFC 1951**
+- `GzipDecompress.cs` strips headers (and checksum at the end) off the file. `Decompressor.cs` Decompresses the rest of the filestream od deflate-data.
 
 ##  Usage
 ```
@@ -17,7 +18,7 @@ dotnet run ./compressed-input.gz outputfile.png
 
 ## Benchmark
 ### Initial values without any optimisations
-- with calculating the crc32: (over the whole file)
+- this might be a good project
 
 ```
 |     Method |           Mean |       Error |       StdDev |         Median |        Gen0 |      Gen1 |      Gen2 |    Allocated |
