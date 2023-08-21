@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CS_Gzip
 {
+    [MemoryDiagnoser]
     internal class Benchmarking
     {
     }
