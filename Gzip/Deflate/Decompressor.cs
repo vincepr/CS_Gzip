@@ -93,9 +93,10 @@ namespace CS_Gzip.Gzip.Deflate
 
         private void decompressHuffmanBlock(CanonicalHuffmanCode lenCode, CanonicalHuffmanCode? distCode)
         {
-            while (true)
+            uint sym = lenCode.DecodeNextSymbol(_input);
+            while (sym != 256)
             {
-                uint sym = lenCode.DecodeNextSymbol(_input);
+                
                 if (sym == 256) break;  // reached end of this block
                 if (sym < 256)
                 {
@@ -115,6 +116,7 @@ namespace CS_Gzip.Gzip.Deflate
                     _history.copy(dist, run, _output);
 
                 }
+                sym = lenCode.DecodeNextSymbol(_input);
             }
         }
 
