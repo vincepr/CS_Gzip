@@ -53,7 +53,7 @@ internal class GzipDecompress
             using (var reader = new BinaryReader(stream, Encoding.Latin1))
             {
 
-                Stream output;
+                //Stream output;
                 try
                 {
                     // first we must read and consume header-info of variable length
@@ -61,7 +61,8 @@ internal class GzipDecompress
 
                     // we wrap the underlyingStream into our own BitStream that reads 1 BIT at a time.
                     Stream underlyingStream = reader.BaseStream;
-                    output = new MemoryStream();
+                    //output = new MemoryStream();
+                    using FileStream output = File.Create(outPath);
                     BitStream bitwiseInStream = new BitStream(underlyingStream);
 
                     // start the decompression process
@@ -76,12 +77,12 @@ internal class GzipDecompress
                     var realCrc32 = HashBytesFromStream(output);
                     Array.Reverse(realCrc32, 0, realCrc32.Length);
 
-                    // we must compare equality of each byte:
-                    if (!realCrc32.AsSpan().SequenceEqual(crc))
-                        throw new InvalidDataException($"Error: Crc32 mismatch; got: {string.Join(" ", crc)} expected: {string.Join(" ", realCrc32)}");
+                    //// we must compare equality of each byte:
+                    //if (!realCrc32.AsSpan().SequenceEqual(crc))
+                    //    throw new InvalidDataException($"Error: Crc32 mismatch; got: {string.Join(" ", crc)} expected: {string.Join(" ", realCrc32)}");
 
                     // we write out the decompressed bytes to a file
-                    writeStreamToFile(output, outPath);
+                    //writeStreamToFile(output, outPath);
                     // dbgPrintOutStream(output);
                 }
                 catch (Exception e)

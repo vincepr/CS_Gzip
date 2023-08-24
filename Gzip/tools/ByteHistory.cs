@@ -62,9 +62,8 @@ namespace CS_Gzip.Gzip.tools
             for (int i = 0; i < len; i++)
             {
                 var by = _data[readIdx];
-                ReadOnlySpan<byte> b = new byte[] { _data[readIdx] };
                 readIdx = (readIdx + 1) % (uint)_data.Length;
-                output.Write(b);
+                output.WriteByte(by);
                 append(by);
             }
         }

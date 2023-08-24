@@ -26,7 +26,7 @@ namespace CS_Gzip.Gzip.tools
     internal class CanonicalHuffmanCode
     {
         private const int MaxCodeLength = 15;
-        private readonly Dictionary<uint, uint> _bitToSymbol = new Dictionary<uint, uint>();
+        private readonly Dictionary<uint, uint> _bitToSymbol = new Dictionary<uint, uint>(MaxCodeLength);
 
         public CanonicalHuffmanCode(in uint[] codeLengths)
         {
@@ -37,6 +37,7 @@ namespace CS_Gzip.Gzip.tools
                 if (l < 0) throw new ArgumentOutOfRangeException("Negative code length");
                 if (l > MaxCodeLength) throw new ArgumentOutOfRangeException("Maximum code length exceeded.");
             }
+
 
             // build the map
             uint nextCode = 0;

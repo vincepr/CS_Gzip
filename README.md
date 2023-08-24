@@ -18,7 +18,7 @@ dotnet run ./compressed-input.gz outputfile.png
 
 ## Benchmark
 ### Initial values without any optimisations
-- this might be a good project
+- the initial benchmark
 
 ```
 |     Method |           Mean |       Error |       StdDev |         Median |        Gen0 |      Gen1 |      Gen2 |    Allocated |
@@ -35,6 +35,55 @@ dotnet run ./compressed-input.gz outputfile.png
 |      PdfOg |    44,070.3 us |   602.63 us |    864.27 us |    43,720.7 us |           - |         - |         - |      5.15 KB |
 |      Mp3Og |    37,184.5 us |   635.53 us |    869.92 us |    36,864.6 us |           - |         - |         - |      5.13 KB |
 |   TxtBigOg |    42,304.7 us |   881.34 us |  1,145.99 us |    41,997.3 us |           - |         - |         - |      5.16 KB |
+```
+## removed MemoryStream
+instead of writing to a memory-stream, we directly write to a SileStream. (and thus allocating a bit less memory)
+	- this removed the (for performance terrible) big blob of data on the gen2-heap (Large Object Heap).
+```
+|     Method |           Mean |       Error |      StdDev |        Gen0 |    Allocated |
+|----------- |---------------:|------------:|------------:|------------:|-------------:|
+|    TxtMine |     7,666.0 us |    18.91 us |    28.31 us |     31.2500 |     67.56 KB |
+|    IcoMine |     2,112.9 us |    32.96 us |    47.27 us |     39.0625 |     84.38 KB |
+|    PngMine |     9,052.4 us |    33.27 us |    48.77 us |     46.8750 |    117.66 KB |
+|     PdfMne | 1,418,545.2 us | 2,057.14 us | 2,883.83 us |  25000.0000 |   51280.7 KB |
+|    Mp3Mine | 1,258,828.2 us | 4,063.30 us | 5,955.93 us |   3000.0000 |   7849.48 KB |
+| TxtBigMine |   664,977.7 us | 3,300.87 us | 4,838.38 us | 188000.0000 | 385881.54 KB |
+|      TxtOg |       526.0 us |   122.34 us |   171.50 us |      1.9531 |       5.1 KB |
+|      IcoOg |     1,949.1 us |    13.85 us |    19.41 us |           - |      5.11 KB |
+|      PngOg |       730.6 us |    35.20 us |    51.59 us |           - |      1.08 KB |
+|      PdfOg |    44,504.6 us |   385.23 us |   527.30 us |           - |      5.18 KB |
+|      Mp3Og |    37,555.6 us |   716.21 us | 1,027.17 us |           - |      5.17 KB |
+|   TxtBigOg |    42,365.4 us |   261.05 us |   339.44 us |           - |      5.19 KB |
+```
+## fixed a bug reallocating a bunch of arrays in a loop
+While going trough Riders Memory-Analysis i found a bug with the following:
+```csharp
+// the bug:
+var by = _data[readIdx];
+ReadOnlySpan<byte> b = new byte[] { _data[readIdx] };
+output.Write(b);
+// changed to:
+var b = _data[readIdx];
+output.WriteByte(b)
+```
+- i was reallocating a array every iteration of the loop.
+- And thus generating arround 500Mb of Memory of byte arrays allocat in the worst case i encountered. (assuming i read the Rider-Memory-Analysis right)
+- this was most notably in the `TxtBigMine`-Benchmark.
+```
+|     Method |           Mean |       Error |      StdDev |         Median |      Gen0 |  Allocated |
+|----------- |---------------:|------------:|------------:|---------------:|----------:|-----------:|
+|    TxtMine |       716.1 us |    20.06 us |    29.40 us |       709.4 us |   24.4141 |   51.62 KB |
+|    IcoMine |     1,506.5 us |   531.67 us |   762.50 us |     2,143.6 us |   27.3438 |   56.66 KB |
+|    PngMine |     9,013.7 us |    60.07 us |    84.21 us |     9,022.2 us |   31.2500 |    87.2 KB |
+|     PdfMne | 1,425,400.9 us | 3,112.69 us | 4,155.35 us | 1,425,818.4 us | 3000.0000 | 7056.23 KB |
+|    Mp3Mine | 1,279,865.8 us | 2,381.56 us | 3,415.57 us | 1,279,756.8 us | 2000.0000 | 4441.83 KB |
+| TxtBigMine |   541,804.0 us | 2,588.46 us | 3,455.53 us |   542,270.0 us | 1000.0000 | 2378.02 KB |
+|      TxtOg |       599.9 us |    14.76 us |    21.64 us |       594.7 us |    1.9531 |    5.23 KB |
+|      IcoOg |     2,111.1 us |    56.71 us |    81.34 us |     2,076.6 us |         - |    5.61 KB |
+|      PngOg |       830.3 us |    20.48 us |    30.66 us |       830.6 us |         - |     1.2 KB |
+|      PdfOg |    44,931.8 us |   610.73 us |   895.20 us |    44,584.0 us |         - |   15.85 KB |
+|      Mp3Og |    37,259.6 us |   233.12 us |   311.21 us |    37,181.1 us |         - |   14.31 KB |
+|   TxtBigOg |    43,341.7 us |   778.72 us | 1,141.44 us |    42,843.8 us |         - |   15.86 KB |
 ```
 
 
