@@ -3,8 +3,8 @@ using BenchmarkDotNet.Running;
 using CS_Gzip;
 using CS_Gzip.Gzip;
 
-////TestingEquality.Run();
-//for (int i = 0; i <3; i++)
+//TestingEquality.Run();
+//for (int i = 0; i < 3; i++)
 //    decompressTestFiles();
 
 runBenchmark();

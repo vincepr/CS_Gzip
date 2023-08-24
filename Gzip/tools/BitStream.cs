@@ -17,7 +17,6 @@ namespace CS_Gzip.Gzip.tools
         {
             _stream = stream;
             _nextIdx = 8;   // state for freshly starting a bit next time ReadBit() is called
-
         }
 
         private Stream _stream;

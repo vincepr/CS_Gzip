@@ -103,11 +103,35 @@ output.WriteByte(b)
 |    Mp3Mine | 3.551 s | 0.0537 s | 0.0787 s |         - |   2.53 MB |
 | TxtBigMine | 1.155 s | 0.1198 s | 0.1679 s |         - |   1.32 MB |
 
+// better List
+|     Method |    Mean |    Error |   StdDev | Allocated |
+|----------- |--------:|---------:|---------:|----------:|
+|     PdfMne | 3.782 s | 0.0432 s | 0.0620 s |   2.83 MB |
+|    Mp3Mine | 3.655 s | 0.1506 s | 0.2255 s |   1.76 MB |
+| TxtBigMine | 1.085 s | 0.0301 s | 0.0392 s |   1.35 MB |
+
+
 // Array -> least memory allocated
 |----------- |--------:|---------:|---------:|----------:|
 |     PdfMne | 3.615 s | 0.0621 s | 0.0871 s |   2.66 MB |
 |    Mp3Mine | 3.386 s | 0.0620 s | 0.0889 s |   1.62 MB |
 | TxtBigMine | 1.034 s | 0.0145 s | 0.0193 s |   1.54 MB |
+
+// SortedList
+|     Method |    Mean |    Error |   StdDev |  Median | Allocated |
+|----------- |--------:|---------:|---------:|--------:|----------:|
+|     PdfMne | 3.688 s | 0.1144 s | 0.1641 s | 3.597 s |   2.82 MB |
+|    Mp3Mine | 3.416 s | 0.1263 s | 0.1851 s | 3.323 s |   1.76 MB |
+| TxtBigMine | 1.041 s | 0.0206 s | 0.0268 s | 1.036 s |   1.34 MB |
+
+// SortedDictionary
+|     Method |    Mean |    Error |   StdDev |      Gen0 | Allocated |
+|----------- |--------:|---------:|---------:|----------:|----------:|
+|     PdfMne | 8.512 s | 0.1733 s | 0.2373 s | 1000.0000 |   5.86 MB |
+|    Mp3Mine | 8.199 s | 0.0886 s | 0.1299 s | 1000.0000 |   3.64 MB |
+| TxtBigMine | 1.736 s | 0.0745 s | 0.1045 s |         - |   2.09 MB |
+
+
 ```
 
 ## useful links
