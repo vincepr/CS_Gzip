@@ -17,6 +17,7 @@ using System.Buffers.Binary;
 using System.Security.Cryptography;
 using CS_Gzip.Gzip.Deflate;
 using CS_Gzip.Gzip.tools;
+using CS_Gzip.Gzip.tools.HuffmanCodeImplementations;
 
 namespace CS_Gzip.Gzip;
 
@@ -29,8 +30,6 @@ namespace CS_Gzip.Gzip;
 /// </summary>
 internal class GzipDecompress
 {
-    private GzipDecompress() { }
-
     /// <summary>
     /// 
     /// </summary>
@@ -38,7 +37,7 @@ internal class GzipDecompress
     /// <returns></returns>
     /// <exception cref="FileNotFoundException"> The file path provided is wrong </exception>
     /// <exception cref="InvalidDataException"> Illegal Formated Deflate data </exception>
-    public static string GzipRun(string[] args)
+    public static string GzipRun<THuffCode>(string[] args) where THuffCode : ICanonicalHuffmanCode
     {
         StringBuilder outStrBuilder = new StringBuilder();
         if (args.Length != 2) return "Usage: GzipDecompress Inputfile.gz Outputfile";
@@ -63,7 +62,7 @@ internal class GzipDecompress
                     BitStream bitwiseInStream = new BitStream(underlyingStream);
 
                     // start the decompression process
-                    var dataCrc = Decompressor.Decompress(bitwiseInStream, output);
+                    var dataCrc = Decompressor<THuffCode>.Decompress(bitwiseInStream, output);
 
                     // read expected-checksum and expected-length
                     byte[] crc = BitConverter.GetBytes(readLittleEndianInt32(reader));
@@ -86,6 +85,14 @@ internal class GzipDecompress
         }
         outStrBuilder.AppendLine("Successfully decompressed " + outPath);
         return outStrBuilder.ToString();
+    }
+    
+    /// <summary>
+    /// default implementation using a dictionary
+    /// </summary>
+    public static string GzipRun(string[] args)
+    {
+        return GzipRun<HuffmanDict>(args);
     }
 
     /// <summary>

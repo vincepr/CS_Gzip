@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CS_Gzip.Gzip.tools.HuffmanCodeImplementations;
 
 namespace CS_Gzip
 {
@@ -41,40 +42,61 @@ namespace CS_Gzip
         private static readonly string[] cmdArgs5 = new[] { "../../../testfiles/mp3.gz", "outfile.mp3" };
         private static readonly string[] cmdArgs6 = new[] { "../../../testfiles/bigtxt.txt.gz", "outfilebig.txt" };
 
-        //[Benchmark]
-        //public string TxtMine() => GzipDecompress.GzipRun(cmdArgs1);
+        // [Benchmark]
+        // public string Dict_TxtMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs1);
+        // [Benchmark]
+        // public string Dict_IcoMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs2);
+        // [Benchmark]
+        // public string Dict_PngMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs3);
+        // [Benchmark]
+        // public string Dict_PdfMne() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs4);
+        // [Benchmark]
+        // public string Dict_Mp3Mine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs5);
+        // [Benchmark]
+        // public string Dict_TxtBigMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs6);
 
-        //[Benchmark]
-        //public string IcoMine() => GzipDecompress.GzipRun(cmdArgs2);
 
-        //[Benchmark]
-        //public string PngMine() => GzipDecompress.GzipRun(cmdArgs3);
+        
         [Benchmark]
-        public string PdfMne() => GzipDecompress.GzipRun(cmdArgs4);
-
+        public string Custom_TxtMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs1);
         [Benchmark]
-        public string Mp3Mine() => GzipDecompress.GzipRun(cmdArgs5);
-
+        public string Custom_IcoMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs2);
         [Benchmark]
-        public string TxtBigMine() => GzipDecompress.GzipRun(cmdArgs6);
-
-
-        //[Benchmark]
-        //public string TxtOg() => DotnetDecompressor.DecompressFile(cmdArgs1);
-
-        //[Benchmark]
-        //public string IcoOg() => DotnetDecompressor.DecompressFile(cmdArgs2);
-
-        //[Benchmark]
-        //public string PngOg() => DotnetDecompressor.DecompressFile(cmdArgs3);
-        //[Benchmark]
-
-        //public string PdfOg() => DotnetDecompressor.DecompressFile(cmdArgs4);
-
-        //[Benchmark]
-        //public string Mp3Og() => DotnetDecompressor.DecompressFile(cmdArgs5);
-
-        //[Benchmark]
-        //public string TxtBigOg() => DotnetDecompressor.DecompressFile(cmdArgs6);
+        public string Custom_PngMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs3);
+        [Benchmark]
+        public string Custom_PdfMne() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs4);
+        [Benchmark]
+        public string Custom_Mp3Mine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs5);
+        [Benchmark]
+        public string Custom_TxtBigMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs6);
+        
+        [Benchmark]
+        public string NewCustom_TxtMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs1);
+        [Benchmark]
+        public string NewCustom_IcoMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs2);
+        [Benchmark]
+        public string NewCustom_PngMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs3);
+        [Benchmark]
+        public string NewCustom_PdfMne() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs4);
+        [Benchmark]
+        public string NewCustom_Mp3Mine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs5);
+        [Benchmark]
+        public string NewCustom_TxtBigMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs6);
+        
+        
+        //
+        // [Benchmark]
+        // public string TxtOg() => DotnetDecompressor.DecompressFile(cmdArgs1);
+        // [Benchmark]
+        // public string IcoOg() => DotnetDecompressor.DecompressFile(cmdArgs2);
+        // [Benchmark]
+        // public string PngOg() => DotnetDecompressor.DecompressFile(cmdArgs3);
+        // [Benchmark]
+        // public string PdfOg() => DotnetDecompressor.DecompressFile(cmdArgs4);
+        // [Benchmark]
+        // public string Mp3Og() => DotnetDecompressor.DecompressFile(cmdArgs5);
+        // [Benchmark]
+        // public string TxtBigOg() => DotnetDecompressor.DecompressFile(cmdArgs6);
+        
         }
 }

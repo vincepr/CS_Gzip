@@ -13,11 +13,11 @@ namespace CS_Gzip.Gzip.Deflate
     /// <summary>
     /// This is the decompression-process of the Deflate data (previously stripped of by its gzip-headers previously)
     /// </summary>
-    internal class Decompressor
+    internal class Decompressor<THuffCode> where THuffCode : ICanonicalHuffmanCode
     {
         // constants these are static -> only get calculated once. (represent a 'default'-kind of huffmantree)
-        private static CanonicalHuffmanCodeArray FIXED_LENGTH_CODE = makeFixedLenCode();
-        private static CanonicalHuffmanCodeArray FIXED_DIST_CODE = makeFixedDistCode();
+        private static ICanonicalHuffmanCode FIXED_LENGTH_CODE = makeFixedLenCode();
+        private static ICanonicalHuffmanCode FIXED_DIST_CODE = makeFixedDistCode();
 
         private const int SizeOfHistoryInBytes = 32 * 1024;
 
@@ -30,13 +30,12 @@ namespace CS_Gzip.Gzip.Deflate
         /// starts the decompression process for data in the input stream and writes it to the output stream.
         /// - returns the crc32 checksum of all the bytes written
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="output"></param>
         public static byte[] Decompress(BitStream input, Stream output)
         {
-            var d = new Decompressor(input, output);
+            var d = new Decompressor<THuffCode>(input, output);
             return d._crc.CollectCrc32();
         }
+        
 
         /// <summary>
         /// Constructor, that immediately starts the decompression.
@@ -100,7 +99,7 @@ namespace CS_Gzip.Gzip.Deflate
             }
         }
 
-        private void decompressHuffmanBlock(CanonicalHuffmanCodeArray lenCode, CanonicalHuffmanCodeArray? distCode)
+        private void decompressHuffmanBlock(ICanonicalHuffmanCode lenCode, ICanonicalHuffmanCode? distCode)
         {
             uint sym = lenCode.DecodeNextSymbol(_input);
             while (sym != 256)
@@ -148,7 +147,7 @@ namespace CS_Gzip.Gzip.Deflate
         /// reads bits from the input stream to build the huffman-code that will be used for the following block
         /// </summary>
         /// <returns></returns>
-        private (CanonicalHuffmanCodeArray lenCode, CanonicalHuffmanCodeArray? distCode) readHuffmanCodes()
+        private (THuffCode lenCode, THuffCode? distCode) readHuffmanCodes()
         {
             uint numLenCodes = _input.ReadUint(5) + 257;   // hlit + 257
             uint numDisCodes = _input.ReadUint(5) + 1;     // hdist + 1
@@ -168,7 +167,7 @@ namespace CS_Gzip.Gzip.Deflate
                 int j = i % 2 == 0 ? 8 + i / 2 : 7 - i / 2;
                 codeLenCodeLen[j] = _input.ReadUint(3);
             }
-            var codeLenCode = new CanonicalHuffmanCodeArray(codeLenCodeLen.ToArray());
+            var codeLenCode = THuffCode.NewHuff(codeLenCodeLen.ToArray());
 
             // Read the main code lengths
             uint[] codeLens = new uint[numLenCodes + numDisCodes];
@@ -212,13 +211,13 @@ namespace CS_Gzip.Gzip.Deflate
             uint[] lenCodeLen = codeLens[0..(int)numLenCodes];
             if (lenCodeLen[256] == 0)
                 throw new InvalidDataException("End of block symbol has zero code length.");
-            CanonicalHuffmanCodeArray huffLenCode = new CanonicalHuffmanCodeArray(lenCodeLen);
+            var huffLenCode = (THuffCode)THuffCode.NewHuff(lenCodeLen);
 
             //create distance-code-tree
             uint[] distCodesLen = codeLens[(int)numLenCodes..codeLens.Length];
-            CanonicalHuffmanCodeArray? huffDistCode;
+            THuffCode? huffDistCode;
             if (distCodesLen.Length == 1 && distCodesLen[0] == 0)
-                huffDistCode = null;    // no distance code -> the block will be all literal symbols
+                huffDistCode = default;    //=null. No distance code -> the block will be all literal symbols
             else
             {
                 // build statistics
@@ -236,7 +235,7 @@ namespace CS_Gzip.Gzip.Deflate
                     // since uint initializes with 0 we can just leave all but the last in place
                     distCodesLen[31] = 1;
                 }
-                huffDistCode = new CanonicalHuffmanCodeArray(distCodesLen);
+                huffDistCode =(THuffCode)THuffCode.NewHuff(distCodesLen);
             }
 
             return (huffLenCode, huffDistCode);
@@ -258,21 +257,21 @@ namespace CS_Gzip.Gzip.Deflate
 
         // building the huffman codes depending on BTYPE
         // BTYPE==1 -> static values
-        private static CanonicalHuffmanCodeArray makeFixedLenCode()
+        private static ICanonicalHuffmanCode makeFixedLenCode()
         {
             List<uint> codeLengths = new List<uint>(288);
             for (uint i = 0; i < 144; i++) codeLengths.Add(8);
             for (uint i = 0; i < 112; i++) codeLengths.Add(9);
             for (uint i = 0; i < 24; i++) codeLengths.Add(7);
             for (uint i = 0; i < 8; i++) codeLengths.Add(8);
-            return new CanonicalHuffmanCodeArray(codeLengths.ToArray());
+            return  THuffCode.NewHuff(codeLengths.ToArray());
         }
 
-        private static CanonicalHuffmanCodeArray makeFixedDistCode()
+        private static ICanonicalHuffmanCode makeFixedDistCode()
         {
             List<uint> codeLengths = new List<uint>(32);
             for (uint i = 0; i < 32; i++) codeLengths.Add(5);
-            return new CanonicalHuffmanCodeArray(codeLengths.ToArray());
+            return THuffCode.NewHuff(codeLengths.ToArray());
         }
     }
 }
