@@ -3,20 +3,20 @@ using BenchmarkDotNet.Running;
 using CS_Gzip;
 using CS_Gzip.Gzip;
 
-//TestingEquality.Run();
-for (int i = 0; i <3; i++)
-    decompressTestFiles();
+////TestingEquality.Run();
+//for (int i = 0; i <3; i++)
+//    decompressTestFiles();
 
-//runBenchmark();
+runBenchmark();
 
 // decompress the png test file
 static void decompressTestFiles()
 {
     List<string[]> cmdArgs = new List<string[]>
     {
-        //new[] { "../../../testfiles/test.txt.gz", "outfile.txt" },
-        //new[] { "../../../testfiles/test.ico.gz", "outfile.ico" },
-        //new[] { "../../../testfiles/test.png.gz", "outfile.png" },
+        new[] { "../../../testfiles/test.txt.gz", "outfile.txt" },
+        new[] { "../../../testfiles/test.ico.gz", "outfile.ico" },
+        new[] { "../../../testfiles/test.png.gz", "outfile.png" },
         new[] { "../../../testfiles/pdf.gz", "outfile.pdf" },
         new[] { "../../../testfiles/mp3.gz", "outfile.mp3" },
         new[] { "../../../testfiles/bigtxt.txt.gz", "outfilebig.txt" }

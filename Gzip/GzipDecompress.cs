@@ -79,7 +79,7 @@ internal class GzipDecompress
                 }
                 catch
                 {
-                    Console.WriteLine(outStrBuilder.ToString());
+                    Console.WriteLine($"This File Errored: {inPath}\n--- --- --- --- ---\n" + outStrBuilder.ToString());
                     throw;      // rethrow to preserve stack information
                 }
             };

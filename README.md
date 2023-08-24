@@ -87,13 +87,27 @@ output.WriteByte(b)
 ```
 
 
-- different Computer
+- different Testing different HuffmanCode implementations
 ```
+// dictinary
 |     Method |       Mean |     Error |    StdDev |     Median |      Gen0 | Allocated |
 |----------- |-----------:|----------:|----------:|-----------:|----------:|----------:|
 |     PdfMne | 2,098.3 ms | 162.54 ms | 238.24 ms | 1,964.8 ms | 2000.0000 |   6.59 MB |
 |    Mp3Mine | 1,718.0 ms |  47.01 ms |  62.75 ms | 1,695.8 ms | 1000.0000 |   4.15 MB |
 | TxtBigMine |   880.0 ms | 152.21 ms | 213.38 ms |   781.0 ms |         - |   2.13 MB |
+
+// List
+|     Method |    Mean |    Error |   StdDev |      Gen0 | Allocated |
+|----------- |--------:|---------:|---------:|----------:|----------:|
+|     PdfMne | 3.762 s | 0.0358 s | 0.0466 s | 1000.0000 |   3.98 MB |
+|    Mp3Mine | 3.551 s | 0.0537 s | 0.0787 s |         - |   2.53 MB |
+| TxtBigMine | 1.155 s | 0.1198 s | 0.1679 s |         - |   1.32 MB |
+
+// Array -> least memory allocated
+|----------- |--------:|---------:|---------:|----------:|
+|     PdfMne | 3.615 s | 0.0621 s | 0.0871 s |   2.66 MB |
+|    Mp3Mine | 3.386 s | 0.0620 s | 0.0889 s |   1.62 MB |
+| TxtBigMine | 1.034 s | 0.0145 s | 0.0193 s |   1.54 MB |
 ```
 
 ## useful links
