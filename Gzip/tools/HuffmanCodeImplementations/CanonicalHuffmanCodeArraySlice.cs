@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip.Gzip.tools
+namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
 {
     /// <summary>
     /// builds a dictionary of the huffmantree.
@@ -49,7 +49,7 @@ namespace CS_Gzip.Gzip.tools
             for (int codeLen = 1; codeLen <= MaxCodeLength; codeLen++)
             {
                 nextCode = nextCode << 1;
-                
+
                 uint startBit = (uint)1 << codeLen;
                 for (uint symbol = 0; symbol < codeLengths.Length; symbol++)
                 {
@@ -85,7 +85,7 @@ namespace CS_Gzip.Gzip.tools
             for (int i = 0; i < MaxCodeLength; i++)
             {
                 codeBits = codeBits << 1 | input.ReadUint(1);
-                int idx = Array.BinarySearch(_codes, 0 , _count, codeBits);
+                int idx = Array.BinarySearch(_codes, 0, _count, codeBits);
                 //Console.WriteLine($"searching {Convert.ToString(codeBits, 2)} == {codeBits}  \t->idx={idx}");
                 if (idx >= 0) return _values[idx];
             }
@@ -99,7 +99,7 @@ namespace CS_Gzip.Gzip.tools
         public void dbgPrintOutHuffmanTree()
         {
             StringBuilder builder = new StringBuilder();
-            for (int i=0; i< _count; i++)
+            for (int i = 0; i < _count; i++)
             {
                 builder.AppendLine($"Code: {Convert.ToString(_codes[i], 2)} \t\t={_codes[i]}\t-> Value: {_values[i]}");
             }

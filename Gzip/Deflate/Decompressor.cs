@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CS_Gzip.Gzip.tools;
+using CS_Gzip.Gzip.tools.HuffmanCodeImplementations;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
 
@@ -15,8 +16,8 @@ namespace CS_Gzip.Gzip.Deflate
     internal class Decompressor
     {
         // constants these are static -> only get calculated once. (represent a 'default'-kind of huffmantree)
-        private static CanonicalHuffmanCodeArraySearchFromStart FIXED_LENGTH_CODE = makeFixedLenCode();
-        private static CanonicalHuffmanCodeArraySearchFromStart FIXED_DIST_CODE = makeFixedDistCode();
+        private static CanonicalHuffmanCodeArray FIXED_LENGTH_CODE = makeFixedLenCode();
+        private static CanonicalHuffmanCodeArray FIXED_DIST_CODE = makeFixedDistCode();
 
         private const int SizeOfHistoryInBytes = 32 * 1024;
 
@@ -99,7 +100,7 @@ namespace CS_Gzip.Gzip.Deflate
             }
         }
 
-        private void decompressHuffmanBlock(CanonicalHuffmanCodeArraySearchFromStart lenCode, CanonicalHuffmanCodeArraySearchFromStart? distCode)
+        private void decompressHuffmanBlock(CanonicalHuffmanCodeArray lenCode, CanonicalHuffmanCodeArray? distCode)
         {
             uint sym = lenCode.DecodeNextSymbol(_input);
             while (sym != 256)
@@ -147,7 +148,7 @@ namespace CS_Gzip.Gzip.Deflate
         /// reads bits from the input stream to build the huffman-code that will be used for the following block
         /// </summary>
         /// <returns></returns>
-        private (CanonicalHuffmanCodeArraySearchFromStart lenCode, CanonicalHuffmanCodeArraySearchFromStart? distCode) readHuffmanCodes()
+        private (CanonicalHuffmanCodeArray lenCode, CanonicalHuffmanCodeArray? distCode) readHuffmanCodes()
         {
             uint numLenCodes = _input.ReadUint(5) + 257;   // hlit + 257
             uint numDisCodes = _input.ReadUint(5) + 1;     // hdist + 1
@@ -167,7 +168,7 @@ namespace CS_Gzip.Gzip.Deflate
                 int j = i % 2 == 0 ? 8 + i / 2 : 7 - i / 2;
                 codeLenCodeLen[j] = _input.ReadUint(3);
             }
-            var codeLenCode = new CanonicalHuffmanCodeArraySearchFromStart(codeLenCodeLen.ToArray());
+            var codeLenCode = new CanonicalHuffmanCodeArray(codeLenCodeLen.ToArray());
 
             // Read the main code lengths
             uint[] codeLens = new uint[numLenCodes + numDisCodes];
@@ -211,11 +212,11 @@ namespace CS_Gzip.Gzip.Deflate
             uint[] lenCodeLen = codeLens[0..(int)numLenCodes];
             if (lenCodeLen[256] == 0)
                 throw new InvalidDataException("End of block symbol has zero code length.");
-            CanonicalHuffmanCodeArraySearchFromStart huffLenCode = new CanonicalHuffmanCodeArraySearchFromStart(lenCodeLen);
+            CanonicalHuffmanCodeArray huffLenCode = new CanonicalHuffmanCodeArray(lenCodeLen);
 
             //create distance-code-tree
             uint[] distCodesLen = codeLens[(int)numLenCodes..codeLens.Length];
-            CanonicalHuffmanCodeArraySearchFromStart? huffDistCode;
+            CanonicalHuffmanCodeArray? huffDistCode;
             if (distCodesLen.Length == 1 && distCodesLen[0] == 0)
                 huffDistCode = null;    // no distance code -> the block will be all literal symbols
             else
@@ -235,7 +236,7 @@ namespace CS_Gzip.Gzip.Deflate
                     // since uint initializes with 0 we can just leave all but the last in place
                     distCodesLen[31] = 1;
                 }
-                huffDistCode = new CanonicalHuffmanCodeArraySearchFromStart(distCodesLen);
+                huffDistCode = new CanonicalHuffmanCodeArray(distCodesLen);
             }
 
             return (huffLenCode, huffDistCode);
@@ -257,21 +258,21 @@ namespace CS_Gzip.Gzip.Deflate
 
         // building the huffman codes depending on BTYPE
         // BTYPE==1 -> static values
-        private static CanonicalHuffmanCodeArraySearchFromStart makeFixedLenCode()
+        private static CanonicalHuffmanCodeArray makeFixedLenCode()
         {
             List<uint> codeLengths = new List<uint>(288);
             for (uint i = 0; i < 144; i++) codeLengths.Add(8);
             for (uint i = 0; i < 112; i++) codeLengths.Add(9);
             for (uint i = 0; i < 24; i++) codeLengths.Add(7);
             for (uint i = 0; i < 8; i++) codeLengths.Add(8);
-            return new CanonicalHuffmanCodeArraySearchFromStart(codeLengths.ToArray());
+            return new CanonicalHuffmanCodeArray(codeLengths.ToArray());
         }
 
-        private static CanonicalHuffmanCodeArraySearchFromStart makeFixedDistCode()
+        private static CanonicalHuffmanCodeArray makeFixedDistCode()
         {
             List<uint> codeLengths = new List<uint>(32);
             for (uint i = 0; i < 32; i++) codeLengths.Add(5);
-            return new CanonicalHuffmanCodeArraySearchFromStart(codeLengths.ToArray());
+            return new CanonicalHuffmanCodeArray(codeLengths.ToArray());
         }
     }
 }

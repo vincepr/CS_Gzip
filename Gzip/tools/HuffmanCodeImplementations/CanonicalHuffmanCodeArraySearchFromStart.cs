@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip.Gzip.tools
+namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
 {
     /// <summary>
     /// builds a dictionary of the huffmantree.
@@ -23,14 +23,14 @@ namespace CS_Gzip.Gzip.tools
     //      0  1
     //     /    \
     //    D      C
-    internal class CanonicalHuffmanCodeList
+    internal class CanonicalHuffmanCodeArraySearchFromStart
     {
         private const int MaxCodeLength = 15;
         //private readonly Dictionary<uint, uint> _bitToSymbol = new Dictionary<uint, uint>(MaxCodeLength);
-        private readonly List<uint> _codes;
-        private readonly List<uint> _values;
+        private readonly uint[] _codes;
+        private readonly uint[] _values;
 
-        public CanonicalHuffmanCodeList(in uint[] codeLengths)
+        public CanonicalHuffmanCodeArraySearchFromStart(in uint[] codeLengths)
         {
             // check if params are of valid state:
             foreach (var l in codeLengths)
@@ -39,30 +39,32 @@ namespace CS_Gzip.Gzip.tools
                 if (l < 0) throw new ArgumentOutOfRangeException("Negative code length");
                 if (l > MaxCodeLength) throw new ArgumentOutOfRangeException("Maximum code length exceeded.");
             }
-            _codes = new List<uint>(codeLengths.Length/2);
-            _values = new List<uint>(codeLengths.Length/2);
+            _codes = new uint[codeLengths.Length];
+            _values = new uint[codeLengths.Length];
 
             // build the map
             uint nextCode = 0;
+            int nrAllocatedCodes = 0;
             for (int codeLen = 1; codeLen <= MaxCodeLength; codeLen++)
             {
                 nextCode = nextCode << 1;
-                
+
                 uint startBit = (uint)1 << codeLen;
                 for (uint symbol = 0; symbol < codeLengths.Length; symbol++)
                 {
                     if (codeLengths[symbol] != codeLen) continue;
                     if (nextCode >= startBit) throw new Exception("Canonical code produces illegal OVER-full Huffman-code-tree.");
 
-                    _codes.Add( startBit | nextCode );
-                    _values.Add( symbol );
+                    _codes[nrAllocatedCodes] = startBit | nextCode;
+                    _values[nrAllocatedCodes] = symbol;
                     nextCode++;
+                    nrAllocatedCodes++;
                 }
             }
-            if (nextCode != 1 << MaxCodeLength) throw new Exception("Canonical code produces illegal UNDER-full Huffman-code-tree.");
-            _codes.TrimExcess();
-            _values.TrimExcess();
 
+            Array.Resize(ref _codes, nrAllocatedCodes);
+            Array.Resize(ref _values, nrAllocatedCodes);
+            if (nextCode != 1 << MaxCodeLength) throw new Exception("Canonical code produces illegal UNDER-full Huffman-code-tree.");
             //if (_codes.Count > 200) dbgPrintOutHuffmanTree();
             //dbgPrintOutHuffmanTree();
         }
@@ -77,11 +79,10 @@ namespace CS_Gzip.Gzip.tools
         public uint DecodeNextSymbol(BitStream input)
         {
             uint codeBits = 1;
-            for (int i = 0; i < MaxCodeLength; i++)
+            for (int i = 0; i < _codes.Length; i++)
             {
                 codeBits = codeBits << 1 | input.ReadUint(1);
-                int idx = _codes.BinarySearch(codeBits);
-                //int idx = Array.BinarySearch(_codes, codeBits);
+                int idx = FindIdx(codeBits);
                 //Console.WriteLine($"searching {Convert.ToString(codeBits, 2)} == {codeBits}  \t->idx={idx}");
                 if (idx >= 0) return _values[idx];
             }
@@ -92,10 +93,25 @@ namespace CS_Gzip.Gzip.tools
             throw new Exception("Unreachable! for");
         }
 
+        /// <summary>
+        /// returns -1 if not found or index if found
+        /// - since our array is sorted from most likely to least likely it might provide good search speed on avg?
+        /// </summary>
+        /// <returns></returns>
+        private int FindIdx(uint value)
+        {
+            for (int i = 0; i < _codes.Length; i++)
+            {
+                if (_codes[i] == value) return i;
+                if (_codes[i] > value) return -1;
+            }
+            return -1;
+        }
+
         public void dbgPrintOutHuffmanTree()
         {
             StringBuilder builder = new StringBuilder();
-            for (int i=0; i< _codes.Count; i++)
+            for (int i = 0; i < _codes.Length; i++)
             {
                 builder.AppendLine($"Code: {Convert.ToString(_codes[i], 2)} \t\t={_codes[i]}\t-> Value: {_values[i]}");
             }

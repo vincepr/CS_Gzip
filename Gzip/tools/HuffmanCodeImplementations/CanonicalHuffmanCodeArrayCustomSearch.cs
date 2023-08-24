@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CS_Gzip.Gzip.tools
+namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
 {
     /// <summary>
     /// builds a dictionary of the huffmantree.
@@ -23,14 +23,14 @@ namespace CS_Gzip.Gzip.tools
     //      0  1
     //     /    \
     //    D      C
-    internal class CanonicalHuffmanCodeArraySearchFromStart : ICanonicalHuffmanCode
+    internal class CanonicalHuffmanCodeArrayCustomSearch
     {
         private const int MaxCodeLength = 15;
         //private readonly Dictionary<uint, uint> _bitToSymbol = new Dictionary<uint, uint>(MaxCodeLength);
         private readonly uint[] _codes;
         private readonly uint[] _values;
 
-        public CanonicalHuffmanCodeArraySearchFromStart(in uint[] codeLengths)
+        public CanonicalHuffmanCodeArrayCustomSearch(in uint[] codeLengths)
         {
             // check if params are of valid state:
             foreach (var l in codeLengths)
@@ -79,12 +79,19 @@ namespace CS_Gzip.Gzip.tools
         public uint DecodeNextSymbol(BitStream input)
         {
             uint codeBits = 1;
+            int nextSearchIdx = 0;
+            uint currCode = _codes[nextSearchIdx];
             for (int i = 0; i < _codes.Length; i++)
             {
                 codeBits = codeBits << 1 | input.ReadUint(1);
-                int idx = FindIdx(codeBits);
+                if (currCode == codeBits) return _values[nextSearchIdx];
+                while (currCode < codeBits)
+                {
+                    nextSearchIdx++;
+                    currCode = _codes[nextSearchIdx];
+                    if (currCode == codeBits) return _values[nextSearchIdx];
+                }
                 //Console.WriteLine($"searching {Convert.ToString(codeBits, 2)} == {codeBits}  \t->idx={idx}");
-                if (idx >= 0) return _values[idx];
             }
 
             //for (int i = 0; i < _codes.Length; i++)

@@ -13,7 +13,12 @@ namespace CS_Gzip
     {
         public BenchmarkingAntivirFriendlyConfig()
         {
-            AddJob(Job.MediumRun.WithToolchain(InProcessNoEmitToolchain.Instance));
+            AddJob(Job
+                .MediumRun.WithToolchain(InProcessNoEmitToolchain.Instance)
+                .WithIterationCount(10)
+                .WithWarmupCount(3)
+                .WithLaunchCount(1)
+                );
         }
     }
 }

@@ -6,7 +6,6 @@ using CS_Gzip.Gzip;
 //TestingEquality.Run();
 //for (int i = 0; i < 3; i++)
 //    decompressTestFiles();
-
 runBenchmark();
 
 // decompress the png test file
