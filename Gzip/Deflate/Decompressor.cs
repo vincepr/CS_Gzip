@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CS_Gzip.Gzip.tools;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsTCPIP;
 
 namespace CS_Gzip.Gzip.Deflate
 {
@@ -21,15 +23,18 @@ namespace CS_Gzip.Gzip.Deflate
         private BitStream _input;
         private Stream _output;
         private ByteHistory _history;
+        private ContinousHashingCrc32 _crc;
 
         /// <summary>
         /// starts the decompression process for data in the input stream and writes it to the output stream.
+        /// - returns the crc32 checksum of all the bytes written
         /// </summary>
         /// <param name="input"></param>
         /// <param name="output"></param>
-        public static void Decompress(BitStream input, Stream output)
+        public static byte[] Decompress(BitStream input, Stream output)
         {
-            new Decompressor(input, output);
+            var d = new Decompressor(input, output);
+            return d._crc.CollectCrc32();
         }
 
         /// <summary>
@@ -40,6 +45,7 @@ namespace CS_Gzip.Gzip.Deflate
             _input = input;
             _output = output;
             _history = new ByteHistory(SizeOfHistoryInBytes);
+            _crc = new ContinousHashingCrc32();
 
             // Process of decompression:
             bool isFinal;
@@ -88,6 +94,7 @@ namespace CS_Gzip.Gzip.Deflate
                 byte b = (byte)_input.ReadUint(8);
                 _output.WriteByte(b);
                 _history.append(b);
+                _crc.NextByte(b);
             }
         }
 
@@ -103,6 +110,7 @@ namespace CS_Gzip.Gzip.Deflate
                     // literal byte
                     _output.WriteByte((byte)sym);
                     _history.append((byte)sym);
+                    _crc.NextByte((byte)sym);
                 }
                 else
                 {
@@ -113,7 +121,7 @@ namespace CS_Gzip.Gzip.Deflate
                     uint distSym = distCode.DecodeNextSymbol(_input);
                     uint dist = decodeDistance(distSym);
                     if (!(1 <= dist && dist <= 32768)) throw new Exception("Invalid distance");
-                    _history.copy(dist, run, _output);
+                    _history.copy(dist, run, _output, _crc);
 
                 }
                 sym = lenCode.DecodeNextSymbol(_input);
@@ -223,7 +231,8 @@ namespace CS_Gzip.Gzip.Deflate
                 if (oneCount == 1 && otherPositiveCOunt == 0)
                 {
                     // we need to fill dummy data in to make a complete huffman-tree (tree MUST always be valid)
-                    // TODO...
+                    // since uint initializes with 0 we can just leave all but the last in place
+                    distCodesLen[31] = 1;
                 }
                 huffDistCode = new CanonicalHuffmanCode(distCodesLen);
             }

@@ -41,14 +41,14 @@ namespace CS_Gzip
         private static readonly string[] cmdArgs5 = new[] { "../../../testfiles/mp3.gz", "outfile.mp3" };
         private static readonly string[] cmdArgs6 = new[] { "../../../testfiles/bigtxt.txt.gz", "outfilebig.txt" };
 
-        [Benchmark]
-        public string TxtMine() => GzipDecompress.GzipRun(cmdArgs1);
+        //[Benchmark]
+        //public string TxtMine() => GzipDecompress.GzipRun(cmdArgs1);
 
-        [Benchmark]
-        public string IcoMine() => GzipDecompress.GzipRun(cmdArgs2);
+        //[Benchmark]
+        //public string IcoMine() => GzipDecompress.GzipRun(cmdArgs2);
 
-        [Benchmark]
-        public string PngMine() => GzipDecompress.GzipRun(cmdArgs3);
+        //[Benchmark]
+        //public string PngMine() => GzipDecompress.GzipRun(cmdArgs3);
         [Benchmark]
         public string PdfMne() => GzipDecompress.GzipRun(cmdArgs4);
 
@@ -59,22 +59,22 @@ namespace CS_Gzip
         public string TxtBigMine() => GzipDecompress.GzipRun(cmdArgs6);
 
 
-        [Benchmark]
-        public string TxtOg() => DotnetDecompressor.DecompressFile(cmdArgs1);
+        //[Benchmark]
+        //public string TxtOg() => DotnetDecompressor.DecompressFile(cmdArgs1);
 
-        [Benchmark]
-        public string IcoOg() => DotnetDecompressor.DecompressFile(cmdArgs2);
+        //[Benchmark]
+        //public string IcoOg() => DotnetDecompressor.DecompressFile(cmdArgs2);
 
-        [Benchmark]
-        public string PngOg() => DotnetDecompressor.DecompressFile(cmdArgs3);
-        [Benchmark]
+        //[Benchmark]
+        //public string PngOg() => DotnetDecompressor.DecompressFile(cmdArgs3);
+        //[Benchmark]
 
-        public string PdfOg() => DotnetDecompressor.DecompressFile(cmdArgs4);
+        //public string PdfOg() => DotnetDecompressor.DecompressFile(cmdArgs4);
 
-        [Benchmark]
-        public string Mp3Og() => DotnetDecompressor.DecompressFile(cmdArgs5);
+        //[Benchmark]
+        //public string Mp3Og() => DotnetDecompressor.DecompressFile(cmdArgs5);
 
-        [Benchmark]
-        public string TxtBigOg() => DotnetDecompressor.DecompressFile(cmdArgs6);
+        //[Benchmark]
+        //public string TxtBigOg() => DotnetDecompressor.DecompressFile(cmdArgs6);
         }
 }

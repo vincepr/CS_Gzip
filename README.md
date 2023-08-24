@@ -87,6 +87,15 @@ output.WriteByte(b)
 ```
 
 
+- different Computer
+```
+|     Method |       Mean |     Error |    StdDev |     Median |      Gen0 | Allocated |
+|----------- |-----------:|----------:|----------:|-----------:|----------:|----------:|
+|     PdfMne | 2,098.3 ms | 162.54 ms | 238.24 ms | 1,964.8 ms | 2000.0000 |   6.59 MB |
+|    Mp3Mine | 1,718.0 ms |  47.01 ms |  62.75 ms | 1,695.8 ms | 1000.0000 |   4.15 MB |
+| TxtBigMine |   880.0 ms | 152.21 ms | 213.38 ms |   781.0 ms |         - |   2.13 MB |
+```
+
 ## useful links
 
 - https://www.rfc-editor.org/rfc/rfc1951.html

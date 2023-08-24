@@ -54,7 +54,7 @@ namespace CS_Gzip.Gzip.tools
         /// <param name="len"></param>
         /// <param name="output"></param>
         /// <exception cref="InvalidDataException"></exception>
-        public void copy(uint dist, uint len, Stream output)
+        public void copy(uint dist, uint len, Stream output, in ContinousHashingCrc32 crc)
         {
             if (len < 0 || dist < 1 || dist > _length) throw new InvalidDataException("Invalid length or distance");
             uint readIdx = (_index - dist + (uint)_data.Length) % (uint)_data.Length;
@@ -65,6 +65,7 @@ namespace CS_Gzip.Gzip.tools
                 readIdx = (readIdx + 1) % (uint)_data.Length;
                 output.WriteByte(by);
                 append(by);
+                crc.NextByte(by);
             }
         }
     }

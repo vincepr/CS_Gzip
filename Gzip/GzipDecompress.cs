@@ -52,8 +52,6 @@ internal class GzipDecompress
             // StreamReader vs BinaryReader here?
             using (var reader = new BinaryReader(stream, Encoding.Latin1))
             {
-
-                //Stream output;
                 try
                 {
                     // first we must read and consume header-info of variable length
@@ -61,31 +59,25 @@ internal class GzipDecompress
 
                     // we wrap the underlyingStream into our own BitStream that reads 1 BIT at a time.
                     Stream underlyingStream = reader.BaseStream;
-                    //output = new MemoryStream();
                     using FileStream output = File.Create(outPath);
                     BitStream bitwiseInStream = new BitStream(underlyingStream);
 
                     // start the decompression process
-                    Decompressor.Decompress(bitwiseInStream, output);
+                    var dataCrc = Decompressor.Decompress(bitwiseInStream, output);
 
-                    // read checksums
+                    // read expected-checksum and expected-length
                     byte[] crc = BitConverter.GetBytes(readLittleEndianInt32(reader));
                     int size = readLittleEndianInt32(reader);
                     if (size != output.Length)
                         throw new InvalidDataException($"Error: Size after decompression mismatched. expected: {size} got: {output.Length}");
-                    // Not-implemented: checking if calculated-crc == read crc-checksum matches up
-                    var realCrc32 = HashBytesFromStream(output);
-                    Array.Reverse(realCrc32, 0, realCrc32.Length);
 
-                    //// we must compare equality of each byte:
-                    //if (!realCrc32.AsSpan().SequenceEqual(crc))
-                    //    throw new InvalidDataException($"Error: Crc32 mismatch; got: {string.Join(" ", crc)} expected: {string.Join(" ", realCrc32)}");
-
-                    // we write out the decompressed bytes to a file
-                    //writeStreamToFile(output, outPath);
+                    // we must compare equality of each byte:
+                    Array.Reverse(dataCrc);
+                    if (!dataCrc.AsSpan().SequenceEqual(crc))
+                        throw new InvalidDataException($"Error: Crc32 mismatch; got: {string.Join(" ", dataCrc)} expected: {string.Join(" ", crc)}");
                     // dbgPrintOutStream(output);
                 }
-                catch (Exception e)
+                catch
                 {
                     Console.WriteLine(outStrBuilder.ToString());
                     throw;      // rethrow to preserve stack information
@@ -194,7 +186,7 @@ internal class GzipDecompress
 
     }
 
-    private static byte[] HashBytesFromStream(Stream output)
+    private static byte[] dbgHashBytesFromStream(Stream output)
     {
         byte[] arr;
         if (output is MemoryStream) arr = ((MemoryStream)output).ToArray();
@@ -241,7 +233,6 @@ internal class GzipDecompress
             try
             {
                 ch = reader.ReadChar();
-
             }
             catch
             {
