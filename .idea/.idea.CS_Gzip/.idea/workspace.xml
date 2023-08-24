@@ -8,18 +8,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="12c099f7-6566-436f-b93c-bedaac2371bb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CS_Gzip/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CS_Gzip/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Benchmarking.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmarking.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Benchmarks.md" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmarks.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gzip/Deflate/Decompressor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Gzip/Deflate/Decompressor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/GzipDecompress.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Gzip/GzipDecompress.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeArray.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeArrayCustomSearch.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeArraySearchFromStart.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeArraySlice.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeDict.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeList.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeSortedDict.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/CanonicalHuffmanCodeSortedList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gzip/Deflate/StackDecompressor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gzip/tools/HuffmanCodeImplementations/HuffmanStruct.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,7 +25,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://C:/Users/vince/RiderProjects/CS_Gzip/Gzip/tools/ByteHistory.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/vince/RiderProjects/CS_Gzip/Benchmarking.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -95,7 +89,26 @@
       <workItem from="1692734961206" duration="3367000" />
       <workItem from="1692884815648" duration="6449000" />
       <workItem from="1692891361352" duration="245000" />
+      <workItem from="1692891620128" duration="2741000" />
+      <workItem from="1692894404339" duration="1998000" />
     </task>
+    <task id="LOCAL-00001" summary="local work in progress">
+      <option name="closed" value="true" />
+      <created>1692891715576</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1692891715576</updated>
+    </task>
+    <task id="LOCAL-00002" summary="local work in prog">
+      <option name="closed" value="true" />
+      <created>1692891728812</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1692891728812</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -115,5 +128,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="local work in progress" />
+    <MESSAGE value="local work in prog" />
+    <option name="LAST_COMMIT_MESSAGE" value="local work in prog" />
   </component>
 </project>

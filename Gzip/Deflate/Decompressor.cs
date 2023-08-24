@@ -99,7 +99,7 @@ namespace CS_Gzip.Gzip.Deflate
             }
         }
 
-        private void decompressHuffmanBlock(ICanonicalHuffmanCode lenCode, ICanonicalHuffmanCode? distCode)
+        private void decompressHuffmanBlock(in ICanonicalHuffmanCode lenCode, in ICanonicalHuffmanCode? distCode)
         {
             uint sym = lenCode.DecodeNextSymbol(_input);
             while (sym != 256)

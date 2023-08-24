@@ -5,9 +5,9 @@ using CS_Gzip.Gzip;
 using CS_Gzip.Gzip.tools.HuffmanCodeImplementations;
 
 //TestingEquality.Run();
-for (int i = 0; i < 5; i++)
-    decompressTestFiles();
-//runBenchmark();
+//for (int i = 0; i < 5; i++)
+//    decompressTestFiles();
+runBenchmark();
 
 // decompress the png test file
 static void decompressTestFiles()
