@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
 {
+    
+    
     /// <summary>
     /// builds a dictionary of the huffmantree.
     /// - these get send before code blocks that use this exact tree as encoding.
@@ -23,15 +25,18 @@ namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
     //      0  1
     //     /    \
     //    D      C
-    internal class CanonicalHuffmanCodeArray
+    internal class HuffmanSortedDict : ICanonicalHuffmanCode
     {
+        public static ICanonicalHuffmanCode NewHuff(in uint[] codeLengths)
+        {
+            return new HuffmanSortedDict(codeLengths);
+        }
+        
         private const int MaxCodeLength = 15;
         //private readonly Dictionary<uint, uint> _bitToSymbol = new Dictionary<uint, uint>(MaxCodeLength);
-        private readonly uint[] _codes;
-        private readonly uint[] _values;
-        private readonly int _count;
+        private readonly SortedDictionary<uint, uint> _codes;
 
-        public CanonicalHuffmanCodeArray(in uint[] codeLengths)
+        private HuffmanSortedDict(in uint[] codeLengths)
         {
             // check if params are of valid state:
             foreach (var l in codeLengths)
@@ -40,12 +45,10 @@ namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
                 if (l < 0) throw new ArgumentOutOfRangeException("Negative code length");
                 if (l > MaxCodeLength) throw new ArgumentOutOfRangeException("Maximum code length exceeded.");
             }
-            _codes = new uint[codeLengths.Length];
-            _values = new uint[codeLengths.Length];
+            _codes = new SortedDictionary<uint, uint>();
 
             // build the map
             uint nextCode = 0;
-            int nrAllocatedCodes = 0;
             for (int codeLen = 1; codeLen <= MaxCodeLength; codeLen++)
             {
                 nextCode = nextCode << 1;
@@ -56,17 +59,12 @@ namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
                     if (codeLengths[symbol] != codeLen) continue;
                     if (nextCode >= startBit) throw new Exception("Canonical code produces illegal OVER-full Huffman-code-tree.");
 
-                    _codes[nrAllocatedCodes] = startBit | nextCode;
-                    _values[nrAllocatedCodes] = symbol;
+                    _codes.Add(startBit | nextCode, symbol);
                     nextCode++;
-                    nrAllocatedCodes++;
                 }
             }
-
-            Array.Resize(ref _codes, nrAllocatedCodes);
-            Array.Resize(ref _values, nrAllocatedCodes);
             if (nextCode != 1 << MaxCodeLength) throw new Exception("Canonical code produces illegal UNDER-full Huffman-code-tree.");
-            _count = nrAllocatedCodes;
+
             //if (_codes.Count > 200) dbgPrintOutHuffmanTree();
             //dbgPrintOutHuffmanTree();
         }
@@ -84,25 +82,17 @@ namespace CS_Gzip.Gzip.tools.HuffmanCodeImplementations
             for (int i = 0; i < MaxCodeLength; i++)
             {
                 codeBits = codeBits << 1 | input.ReadUint(1);
-                int idx = Array.BinarySearch(_codes, 0, _count, codeBits);
+
+                bool exists = _codes.TryGetValue(codeBits, out uint value);
+                if (exists) return value;
+                //int idx = Array.BinarySearch(_codes, codeBits);
                 //Console.WriteLine($"searching {Convert.ToString(codeBits, 2)} == {codeBits}  \t->idx={idx}");
-                if (idx >= 0) return _values[idx];
             }
 
             //for (int i = 0; i < _codes.Length; i++)
             //    Console.WriteLine($"[ {Convert.ToString(_codes[i], 2)} == {_codes[i]}]");
 
             throw new Exception("Unreachable! for");
-        }
-
-        public void dbgPrintOutHuffmanTree()
-        {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < _count; i++)
-            {
-                builder.AppendLine($"Code: {Convert.ToString(_codes[i], 2)} \t\t={_codes[i]}\t-> Value: {_values[i]}");
-            }
-            Console.WriteLine(builder.ToString());
         }
     }
 }

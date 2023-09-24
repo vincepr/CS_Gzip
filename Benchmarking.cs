@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CS_Gzip.Gzip.tools.HuffmanCodeImplementations;
 
 namespace CS_Gzip
 {
@@ -41,40 +42,109 @@ namespace CS_Gzip
         private static readonly string[] cmdArgs5 = new[] { "../../../testfiles/mp3.gz", "outfile.mp3" };
         private static readonly string[] cmdArgs6 = new[] { "../../../testfiles/bigtxt.txt.gz", "outfilebig.txt" };
 
-        //[Benchmark]
-        //public string TxtMine() => GzipDecompress.GzipRun(cmdArgs1);
 
-        //[Benchmark]
-        //public string IcoMine() => GzipDecompress.GzipRun(cmdArgs2);
-
-        //[Benchmark]
-        //public string PngMine() => GzipDecompress.GzipRun(cmdArgs3);
+        
         [Benchmark]
-        public string PdfMne() => GzipDecompress.GzipRun(cmdArgs4);
-
+        public string Original_Txt() => DotnetDecompressor.DecompressFile(cmdArgs1);
         [Benchmark]
-        public string Mp3Mine() => GzipDecompress.GzipRun(cmdArgs5);
-
+        public string Original_Ico() => DotnetDecompressor.DecompressFile(cmdArgs2);
         [Benchmark]
-        public string TxtBigMine() => GzipDecompress.GzipRun(cmdArgs6);
+        public string Original_Png() => DotnetDecompressor.DecompressFile(cmdArgs3);
+        [Benchmark]
+        public string Original_Pdf() => DotnetDecompressor.DecompressFile(cmdArgs4);
+        [Benchmark]
+        public string Original_Mp3() => DotnetDecompressor.DecompressFile(cmdArgs5);
+        [Benchmark]
+        public string Original_TxtBig() => DotnetDecompressor.DecompressFile(cmdArgs6);
+        
+        
+        
+        [Benchmark]
+        public string Array_TxtMine() => GzipDecompress.GzipRun<HuffmanArray>(cmdArgs1);
+        [Benchmark]
+        public string Array_IcoMine() => GzipDecompress.GzipRun<HuffmanArray>(cmdArgs2);
+        [Benchmark]
+        public string Array_PngMine() => GzipDecompress.GzipRun<HuffmanArray>(cmdArgs3);
+        [Benchmark]
+        public string Array_PdfMne() => GzipDecompress.GzipRun<HuffmanArray>(cmdArgs4);
+        [Benchmark]
+        public string Array_Mp3Mine() => GzipDecompress.GzipRun<HuffmanArray>(cmdArgs5);
+        [Benchmark]
+        public string Array_TxtBigMine() => GzipDecompress.GzipRun<HuffmanArray>(cmdArgs6);
+
+        
+        
+        [Benchmark]
+        public string SortedList_TxtMine() => GzipDecompress.GzipRun<HuffmanSortedList>(cmdArgs1);
+        [Benchmark]
+        public string SortedList_IcoMine() => GzipDecompress.GzipRun<HuffmanSortedList>(cmdArgs2);
+        [Benchmark]
+        public string SortedList_PngMine() => GzipDecompress.GzipRun<HuffmanSortedList>(cmdArgs3);
+        [Benchmark]
+        public string SortedList_PdfMne() => GzipDecompress.GzipRun<HuffmanSortedList>(cmdArgs4);
+        [Benchmark]
+        public string SortedList_Mp3Mine() => GzipDecompress.GzipRun<HuffmanSortedList>(cmdArgs5);
+        [Benchmark]
+        public string SortedList_TxtBigMine() => GzipDecompress.GzipRun<HuffmanSortedList>(cmdArgs6);
+
+         
+        
+        [Benchmark]
+        public string SortedDict_TxtMine() => GzipDecompress.GzipRun<HuffmanSortedDict>(cmdArgs1);
+        [Benchmark]
+        public string SortedDict_IcoMine() => GzipDecompress.GzipRun<HuffmanSortedDict>(cmdArgs2);
+        [Benchmark]
+        public string SortedDict_PngMine() => GzipDecompress.GzipRun<HuffmanSortedDict>(cmdArgs3);
+        [Benchmark]
+        public string SortedDict_PdfMne() => GzipDecompress.GzipRun<HuffmanSortedDict>(cmdArgs4);
+        [Benchmark]
+        public string SortedDict_Mp3Mine() => GzipDecompress.GzipRun<HuffmanSortedDict>(cmdArgs5);
+        [Benchmark]
+        public string SortedDict_TxtBigMine() => GzipDecompress.GzipRun<HuffmanSortedDict>(cmdArgs6);
+
+        
+        
+        [Benchmark]
+        public string List_TxtMine() => GzipDecompress.GzipRun<HuffmanList>(cmdArgs1);
+        [Benchmark]
+        public string List_IcoMine() => GzipDecompress.GzipRun<HuffmanList>(cmdArgs2);
+        [Benchmark]
+        public string List_PngMine() => GzipDecompress.GzipRun<HuffmanList>(cmdArgs3);
+        [Benchmark]
+        public string List_PdfMne() => GzipDecompress.GzipRun<HuffmanList>(cmdArgs4);
+        [Benchmark]
+        public string List_Mp3Mine() => GzipDecompress.GzipRun<HuffmanList>(cmdArgs5);
+        [Benchmark]
+        public string List_TxtBigMine() => GzipDecompress.GzipRun<HuffmanList>(cmdArgs6);
+
+        
+        
+        [Benchmark]
+        public string Dict_TxtMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs1);
+        [Benchmark]
+        public string Dict_IcoMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs2);
+        [Benchmark]
+        public string Dict_PngMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs3);
+        [Benchmark]
+        public string Dict_PdfMne() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs4);
+        [Benchmark]
+        public string Dict_Mp3Mine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs5);
+        [Benchmark]
+        public string Dict_TxtBigMine() => GzipDecompress.GzipRun<HuffmanDict>(cmdArgs6);
 
 
-        //[Benchmark]
-        //public string TxtOg() => DotnetDecompressor.DecompressFile(cmdArgs1);
-
-        //[Benchmark]
-        //public string IcoOg() => DotnetDecompressor.DecompressFile(cmdArgs2);
-
-        //[Benchmark]
-        //public string PngOg() => DotnetDecompressor.DecompressFile(cmdArgs3);
-        //[Benchmark]
-
-        //public string PdfOg() => DotnetDecompressor.DecompressFile(cmdArgs4);
-
-        //[Benchmark]
-        //public string Mp3Og() => DotnetDecompressor.DecompressFile(cmdArgs5);
-
-        //[Benchmark]
-        //public string TxtBigOg() => DotnetDecompressor.DecompressFile(cmdArgs6);
+        
+        [Benchmark]
+        public string Custom_TxtMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs1);
+        [Benchmark]
+        public string Custom_IcoMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs2);
+        [Benchmark]
+        public string Custom_PngMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs3);
+        [Benchmark]
+        public string Custom_PdfMne() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs4);
+        [Benchmark]
+        public string Custom_Mp3Mine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs5);
+        [Benchmark]
+        public string Custom_TxtBigMine() => GzipDecompress.GzipRun<HuffmanArrayCustomSearch>(cmdArgs6);
         }
 }
