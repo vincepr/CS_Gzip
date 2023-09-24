@@ -1,12 +1,23 @@
-﻿// See https://aka.ms/new-console-template for more information
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 using CS_Gzip;
 using CS_Gzip.Gzip;
 
+Console.WriteLine(args.Length);
+if (args.Length != 2 )
+{
+    Console.WriteLine("Expected 2 arguments: \ndotnetgzip [path to .gz] [outfile.pdf]");
+    Environment.Exit(1);
+}
+string result = GzipDecompress.GzipRun(args);
+Console.WriteLine(result);
+
+
+// // Performance benchmarking
 //TestingEquality.Run();
 //for (int i = 0; i < 3; i++)
 //    decompressTestFiles();
-runBenchmark();
+// runBenchmark();
+
 
 // decompress the png test file
 static void decompressTestFiles()
